@@ -2,7 +2,7 @@
 
 namespace Music;
 
-class Scale{ 
+class Scale { 
 	
 	/* Scale formulas as constants */
 	const formulas = array(
@@ -21,10 +21,6 @@ class Scale{
 		),
 	);
 
-	public function __get($scale){
-		return false;
-	}
-
 	protected $data;
 
 	protected $baseNote;
@@ -39,7 +35,6 @@ class Scale{
 			$this->data = self::formulas[$scale];
 		else
 			return false;
-
 		$this->baseNote = $note;
 		$this->buildSelf();
 	}
@@ -88,7 +83,36 @@ class Scale{
 		return $string;
 	}
 
-	public function getFriendlyScale(): array {
+	public function getFriendlyScaleString(): string {
+		$friendly = "";
+		foreach ($this->notes as $note){
+			$friendly .= " " . $note->getHumanFriendly();
+		}
+		return trim($friendly);
+	}
 
+	public function getFriendlyScaleArray(): array {
+		$friendly = "";
+		foreach ($this->notes as $note){
+			$friendly[] = $note->getHumanFriendly();
+		}
+		return $friendly;
+	}
+
+	public function asArray(): array {
+		$notes = array(
+			'baseNote' => $this->baseNote->letter,
+			'baseNoteSharp' => $this->baseNote->sharp,
+			'formula' => $this->data['name'],
+			'notes' => array()
+		);
+		foreach ($this->notes as $note){
+			$notes['notes'][] = $note->getHumanFriendly();
+		}
+		return $notes;
+	}
+
+	public function __get($scale){
+		return false;
 	}
 }

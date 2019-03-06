@@ -9,6 +9,8 @@ class Note {
 	/* tones and half-tones between notes */
 	const DISTANCE = array (1, 1, 0, 1, 1, 1, 0);
 
+	const NOTECOUNT = 12;
+
 	const OCTAVEMAX = 10;
 
 	protected $flat = false;

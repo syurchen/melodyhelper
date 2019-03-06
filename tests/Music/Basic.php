@@ -4,6 +4,11 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Redis;
+use Music\Note;
+use Music\Scale;
+use Music\NoteManager;
+use Music\Midi;
 
 class BasicMusicTest extends TestCase
 {
@@ -14,7 +19,7 @@ class BasicMusicTest extends TestCase
      */
     public function testMidiBasic()
     {
-	    $midi = new \Music\Midi();
+	    $midi = new Midi();
 	    $this->assertNotFalse($midi->importMid(__DIR__ . '/beethoven1.mid'));
 	    $noteList = $midi->getNoteList();
 	    $this->assertTrue(is_array($noteList));
@@ -23,15 +28,15 @@ class BasicMusicTest extends TestCase
     public function testNotesBasic()
     {
 	    $letter = 'G';
-	    $note = new \Music\Note($letter);
+	    $note = new Note($letter);
 	    
 	    $this->assertNotFalse($note);
 	    $hr1 = $note->getHumanFriendly();
 	    $note->setSharp();
 	    $hr2 = $note->getHumanFriendly();
 	    $this->assertFalse($hr1 == $hr2);
-	    $note2 = new \Music\Note($letter, true);
-	    $this->assertTrue(\Music\NoteManager::CheckEqual($note, $note2));
+	    $note2 = new Note($letter, true);
+	    $this->assertTrue(NoteManager::CheckEqual($note, $note2));
 	    return $note;
 
     }
@@ -41,7 +46,7 @@ class BasicMusicTest extends TestCase
      */
     public function testScaleChordBasic($note)
     {
-	    $scale = new \Music\Scale($note, 'minor');
+	    $scale = new Scale($note, 'minor');
 	    $this->assertNotFalse($scale);
 	    $this->assertEquals(count($scale->getNotes()), 7);
 	    $notes = $scale->getNotes();
@@ -60,5 +65,27 @@ class BasicMusicTest extends TestCase
 	    }
     }
 
+    /**
+     * @depends testScaleChordBasic
+     */
+    public function testFindScale()
+    {
+	    $manager = new NoteManager();
+	    $melody = array(
+		    new Note('C'),
+		    new Note('D'),
+		    new Note('E'),
+		    new Note('F'),
+	    );
+
+	    $result = $manager->findMelodyScale($melody);
+	    $this->assertTrue(is_array($result));
+	    $this->assertTrue(!empty($result));
+	    echo "\n\n";
+	    foreach ($result as $scale){
+		    echo "\n{$scale->getFriendlyName()}\n";
+	    }
+
+    }
 
 }
