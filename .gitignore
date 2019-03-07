@@ -16,3 +16,6 @@ storage/*.key
 .env
 Homestead.yaml
 Homestead.json
+
+*.swp
+*.swo

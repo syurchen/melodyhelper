@@ -9,22 +9,27 @@ use Music\Note;
 use Music\Scale;
 use Music\NoteManager;
 use Music\Midi;
+use Music\MidiParser;
 
 class BasicMusicTest extends TestCase
 {
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
+
     public function testMidiBasic()
     {
 	    $midi = new Midi();
 	    $this->assertNotFalse($midi->importMid(__DIR__ . '/beethoven1.mid'));
 	    $noteList = $midi->getNoteList();
 	    $this->assertTrue(is_array($noteList));
+	    $melody = MidiParser::parseNoteList($noteList, true, false);
+
+	    $this->assertTrue(is_array($melody));
+	    $this->assertTrue($melody[0] instanceof Note);
+	    return $melody;
     }
 
+    /**
+     * @depends testMidiBasic
+     */
     public function testNotesBasic()
     {
 	    $letter = 'G';
@@ -66,18 +71,22 @@ class BasicMusicTest extends TestCase
     }
 
     /**
+     * @depends testMidiBasic
      * @depends testScaleChordBasic
      */
-    public function testFindScale()
+    public function testFindScale($melody)
     {
 	    $manager = new NoteManager();
-	    $melody = array(
+	    $melodyOld = array(
 		    new Note('C'),
 		    new Note('D'),
 		    new Note('E'),
 		    new Note('F'),
 	    );
-
+	    echo "\n_____\nMelody:\n";
+	    foreach($melody as $note){
+		    echo "{$note->getHumanFriendly()}\n";
+	    }
 	    $result = $manager->findMelodyScale($melody);
 	    $this->assertTrue(is_array($result));
 	    $this->assertTrue(!empty($result));
