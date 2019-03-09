@@ -37,11 +37,12 @@ class BasicMusicTest extends TestCase
 	    
 	    $this->assertNotFalse($note);
 	    $hr1 = $note->getHumanFriendly();
-	    $note->setSharp();
+	    $note->setSharp(); 
 	    $hr2 = $note->getHumanFriendly();
 	    $this->assertFalse($hr1 == $hr2);
 	    $note2 = new Note($letter, true);
 	    $this->assertTrue(NoteManager::CheckEqual($note, $note2));
+	    $note->setSharp(); 
 	    return $note;
 
     }
@@ -51,7 +52,7 @@ class BasicMusicTest extends TestCase
      */
     public function testScaleChordBasic($note)
     {
-	    $scale = new Scale($note, 'minor');
+	    $scale = new Scale($note, 'major');
 	    $this->assertNotFalse($scale);
 	    $this->assertEquals(count($scale->getNotes()), 7);
 	    $notes = $scale->getNotes();
